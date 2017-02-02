@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.yahiab.graphix.controller._3d.controls.numberspinner.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="600.0" minWidth="1024.0" prefHeight="600.0"
+            prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.40"
+            fx:controller="com.yahiab.graphix.controller._3d.Main3DController">
+   <children>
+      <VBox id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+             <GridPane>
+                 <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0"/>
+                 </columnConstraints>
+                 <rowConstraints>
+                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                 </rowConstraints>
+                 <children>
+                     <ToolBar>
+                         <items>
+                             <Button fx:id="btnOpenMenu" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                     onAction="#open" prefHeight="55.0" styleClass="topmenubutton" text="Ouvrir"
+                                     textFill="WHITE">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                                 <font>
+                                     <Font name="System Bold" size="13.0"/>
+                                 </font>
+                             </Button>
+                             <MenuButton fx:id="btnSave" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                         prefHeight="55.0" styleClass="topmenubutton" text="Enregistrer"
+                                         textFill="WHITE">
+                                 <items>
+                                     <MenuItem mnemonicParsing="false" onAction="#saveAs"
+                                               text="Enregistrer le modèle 3D actuel (sous format FXML)"/>
+                                     <MenuItem mnemonicParsing="false" onAction="#saveAsPNG"
+                                               text="Enregistrer comme une image .PNG"/>
+                                     <MenuItem mnemonicParsing="false" onAction="#saveAsPNGTransparentBackground"
+                                               text="Enregistrer comme une image .PNG (sur fond transparent)"/>
+                                     <MenuItem mnemonicParsing="false" onAction="#saveAsOBJFile"
+                                               text="Enregistrer sous format .OBJ"/>
+                                 </items>
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                                 <font>
+                                     <Font name="System Bold" size="13.0"/>
+                                 </font>
+                             </MenuButton>
+                             <Button fx:id="btnPrint" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                     onAction="#printOnPaper" prefHeight="55.0" styleClass="topmenubutton"
+                                     text="Imprimer" textFill="WHITE">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                                 <font>
+                                     <Font name="System Bold" size="13.0"/>
+                                 </font>
+                             </Button>
+                             <Button fx:id="btn3DPrint" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                     onAction="#saveAsSTLFile" prefHeight="55.0" styleClass="topmenubutton"
+                                     text="Impression 3D" textFill="WHITE">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                                 <font>
+                                     <Font name="System Bold" size="13.0"/>
+                                 </font>
+                             </Button>
+                             <Button fx:id="btnDelete" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                     onAction="#buttonDeleteSelectedShape" prefHeight="55.0" styleClass="deletebuttons"
+                                     text="Supprimer">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                             </Button>
+                             <Button fx:id="btnDeleteAll" maxHeight="55.0" minHeight="55.0" mnemonicParsing="false"
+                                     onAction="#buttonDeleteAll" prefHeight="55.0" styleClass="deletebuttons"
+                                     text="Supprimer tout">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                             </Button>
+                         </items>
+                         <GridPane.margin>
+                             <Insets/>
+                         </GridPane.margin>
+                     </ToolBar>
+                     <ToolBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1">
+                         <items>
+                             <ToggleButton fx:id="btnSettings" contentDisplay="CENTER" maxHeight="55.0" minHeight="55.0"
+                                           mnemonicParsing="false" onAction="#toggleSettings" prefHeight="55.0"
+                                           styleClass="topmenubutton">
+                                 <cursor>
+                                     <Cursor fx:constant="HAND"/>
+                                 </cursor>
+                             </ToggleButton>
+                         </items>
+                     </ToolBar>
+                 </children>
+             </GridPane>
+             <SplitPane fx:id="outerSplitPane" dividerPositions="0.2" prefHeight="160.0" prefWidth="200.0"
+                        VBox.vgrow="ALWAYS">
+              <items>
+                  <AnchorPane fx:id="selectedShapeAnchorPane" maxWidth="300.0" minWidth="300.0">
+                     <children>
+                         <GridPane fx:id="selectedShapeGridPane" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT"
+                                   AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                   AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="125.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="9.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="9.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="9.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="9.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="9.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="27.0" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                               <Label text="Forme 3D sélectionnée" GridPane.columnSpan="2147483647"
+                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label fx:id="selectedShapeD1Label" text="Dimension 1" GridPane.rowIndex="7">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label fx:id="selectedShapeD2Label" text="Dimension 2" GridPane.rowIndex="8">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label fx:id="selectedShapeD3Label" text="Dimension 3" GridPane.rowIndex="9">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label text="Dimensions de la forme 3D" GridPane.columnSpan="2147483647"
+                                      GridPane.rowIndex="6">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <ColorPicker fx:id="selectedShapeColorPicker" promptText="Color" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS" />
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" />
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                               <Label text="Translation" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER"
+                                      GridPane.rowIndex="16" GridPane.valignment="CENTER">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="21" />
+                               <Label text="Changement d'échelle" GridPane.columnSpan="2147483647"
+                                      GridPane.halignment="CENTER" GridPane.rowIndex="22" GridPane.valignment="CENTER">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <TextField fx:id="selectedShapeTypeLabel" editable="false" text="type..." GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
+                               <Label text="Position" GridPane.columnSpan="2147483647" GridPane.rowIndex="12">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="18" />
+                               <Label text="Rotation" GridPane.columnSpan="2147483647" GridPane.rowIndex="19">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label fx:id="selectedShapeD4Label" text="Dimension 4" GridPane.rowIndex="10">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <GridPane GridPane.columnSpan="2147483647" GridPane.rowIndex="13">
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="40.0" minWidth="20.0" prefWidth="40.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="40.0" minWidth="20.0" prefWidth="40.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="20.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="40.0" minWidth="20.0" prefWidth="100.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="20.0" />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                                </rowConstraints>
+                                  <children>
+                                    <Label text=" X : " GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label text=" Y : " GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label text=" Z : " GridPane.columnIndex="4" />
+                                      <NumberSpinnerLight fx:id="selectedShapeCoordX" GridPane.columnIndex="1"/>
+                                      <NumberSpinnerLight fx:id="selectedShapeCoordY" GridPane.columnIndex="3"/>
+                                      <NumberSpinnerLight fx:id="selectedShapeCoordZ" GridPane.columnIndex="5"/>
+                                  </children>
+                              </GridPane>
+                              <NumberSpinner fx:id="selectedShapeD1Field" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <NumberSpinner fx:id="selectedShapeD2Field" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <NumberSpinner fx:id="selectedShapeD3Field" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <NumberSpinner fx:id="selectedShapeD4Field" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <GridPane GridPane.columnSpan="2147483647" GridPane.rowIndex="23">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0" prefWidth="40.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0" prefWidth="40.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0" prefWidth="40.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text=" X : " GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label text=" Y : " GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label text=" Z : " GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <NumberSpinner fx:id="selectedShapeScaleX" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <NumberSpinner fx:id="selectedShapeScaleY" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <NumberSpinner fx:id="selectedShapeScaleZ" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                 </children>
+                              </GridPane>
+                               <Label text="Identifiant" GridPane.rowIndex="2">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                              <TextField fx:id="selectedShapeID" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                               <Label text="Type" GridPane.rowIndex="1">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <Label text="Couleur" GridPane.rowIndex="3">
+                                   <styleClass>
+                                       <String fx:value="normal-label"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                               <GridPane GridPane.columnSpan="2147483647" GridPane.rowIndex="20">
+                                   <columnConstraints>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                   </columnConstraints>
+                                   <rowConstraints>
+                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                   </rowConstraints>
+                                   <children>
+                                       <Label text=" X : " GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <Label text=" Y : " GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                                              GridPane.valignment="CENTER"/>
+                                       <Label text=" Z : " GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                                              GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeRotateX" GridPane.columnIndex="1"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeRotateY" GridPane.columnIndex="3"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeRotateZ" GridPane.columnIndex="5"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                   </children>
+                               </GridPane>
+                               <GridPane GridPane.columnSpan="2147483647" GridPane.rowIndex="17">
+                                   <columnConstraints>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="20.0"
+                                                          prefWidth="40.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="50.0"
+                                                          prefWidth="50.0"/>
+                                   </columnConstraints>
+                                   <rowConstraints>
+                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                   </rowConstraints>
+                                   <children>
+                                       <Label text=" X : " GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <Label text=" Y : " GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                                              GridPane.valignment="CENTER"/>
+                                       <Label text=" Z : " GridPane.columnIndex="4" GridPane.halignment="CENTER"
+                                              GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeTranslateX" GridPane.columnIndex="1"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeTranslateY" GridPane.columnIndex="3"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <NumberSpinner fx:id="selectedShapeTranslateZ" GridPane.columnIndex="5"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                       <Button mnemonicParsing="false" onAction="#buttonOkTranslate" prefHeight="20.0"
+                                               styleClass="custombutton" text="OK" GridPane.columnIndex="6"
+                                               GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+                                   </children>
+                               </GridPane>
+                               <Label text="Transformations géométriques" GridPane.columnSpan="2147483647"
+                                      GridPane.rowIndex="15">
+                                   <font>
+                                       <Font name="System Bold" size="14.0"/>
+                                   </font>
+                                   <styleClass>
+                                       <String fx:value="important-title"/>
+                                       <String fx:value="scalableonhover"/>
+                                   </styleClass>
+                               </Label>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <SplitPane fx:id="splitPane" dividerPositions="0.75" prefHeight="600.0" prefWidth="200.0">
+                     <items>
+                         <AnchorPane maxWidth="450.0" prefHeight="200.0" prefWidth="200.0"/>
+                         <Accordion fx:id="settings" maxWidth="240.0" minWidth="240" prefHeight="600.0"
+                                    prefWidth="240.0">
+                           <panes>
+                               <TitledPane animated="true" expanded="true" text="Formes géométriques 3D" fx:id="x4">
+                                 <content>
+                                     <ScrollPane>
+                                         <content>
+                                             <GridPane alignment="CENTER" hgap="5.0" vgap="5.0">
+                                                 <children>
+                                                     <Label alignment="CENTER" styleClass="scalableonhover"
+                                                            text="Formes 3D" GridPane.columnSpan="2147483647">
+                                                         <font>
+                                                             <Font name="System Bold" size="24.0"/>
+                                                         </font>
+                                                     </Label>
+                                                     <Button fx:id="btnSphere" minHeight="100.0" mnemonicParsing="false"
+                                                             onAction="#actionCreateSphere" prefHeight="100.0"
+                                                             prefWidth="100.0" GridPane.halignment="CENTER"
+                                                             GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnBox" minHeight="100.0" minWidth="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateBox"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                                                             GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnCylinder" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateCylinder"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                                                             GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnCone" minHeight="100.0" mnemonicParsing="false"
+                                                             onAction="#actionCreateCone" prefHeight="100.0"
+                                                             prefWidth="100.0" GridPane.columnIndex="1"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="4"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnPyramid" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreatePyramid"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="4"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnPrism" minHeight="100.0" mnemonicParsing="false"
+                                                             onAction="#actionCreatePrism" prefHeight="100.0"
+                                                             prefWidth="100.0" GridPane.columnIndex="1"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnTetrahedron" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateTetrahedron"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnCube" minHeight="100.0" minWidth="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateCube"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="2"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnCapsule" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateCapsule"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="6"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnSpheroid" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateSpheroid"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="7"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnSpring" minHeight="100.0" mnemonicParsing="false"
+                                                             onAction="#actionCreateSpring" prefHeight="100.0"
+                                                             prefWidth="100.0" GridPane.columnIndex="1"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="7"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnTorus" minHeight="100.0" mnemonicParsing="false"
+                                                             onAction="#actionCreateTorus" prefHeight="100.0"
+                                                             prefWidth="100.0" GridPane.columnIndex="1"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="6"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnTrapezoid" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateTrapezoid"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.halignment="CENTER" GridPane.rowIndex="8"
+                                                             GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <Button fx:id="btnOctahedron" minHeight="100.0"
+                                                             mnemonicParsing="false" onAction="#actionCreateOctahedron"
+                                                             prefHeight="100.0" prefWidth="100.0"
+                                                             GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                                                             GridPane.rowIndex="8" GridPane.valignment="CENTER">
+                                                         <styleClass>
+                                                             <String fx:value="shapesbuttons"/>
+                                                             <String fx:value="scalableonhover"/>
+                                                         </styleClass>
+                                                     </Button>
+                                                     <CheckBox fx:id="creationParameters" mnemonicParsing="false"
+                                                               selected="true" text="Création paramètrée"
+                                                               GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+                                                 </children>
+                                                 <columnConstraints>
+                                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"
+                                                                        minWidth="10.0" prefWidth="100.0"/>
+                                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"
+                                                                        minWidth="10.0" prefWidth="100.0"/>
+                                                 </columnConstraints>
+                                                 <padding>
+                                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" fx:id="x3"/>
+                                                 </padding>
+                                                 <rowConstraints>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                     vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                 </rowConstraints>
+                                             </GridPane>
+                                         </content>
+                                     </ScrollPane>
+                                 </content>
+                              </TitledPane>
+                               <TitledPane animated="true" text="Opérations booléennes">
+                                   <content>
+                                       <GridPane>
+                                           <columnConstraints>
+                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                           </columnConstraints>
+                                           <rowConstraints>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="300.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="30.0"
+                                                               vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                           </rowConstraints>
+                                           <children>
+                                               <Label text="Opérations booléennes" GridPane.columnSpan="2147483647"
+                                                      GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                   <font>
+                                                       <Font name="System Bold" size="18.0"/>
+                                                   </font>
+                                               </Label>
+                                               <CheckBox fx:id="CSGModeCheckBox" mnemonicParsing="false"
+                                                         text="Activer les opérations booléennes"
+                                                         GridPane.columnSpan="2147483647" GridPane.halignment="CENTER"
+                                                         GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
+                                               <Label styleClass="important-title" text="Type de l'opération"
+                                                      GridPane.columnSpan="2147483647" GridPane.halignment="CENTER"
+                                                      GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
+                                               <Label styleClass="normal-label" text="Union"
+                                                      GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                                      GridPane.valignment="CENTER"/>
+                                               <Label styleClass="normal-label" text="Intersection"
+                                                      GridPane.halignment="CENTER" GridPane.rowIndex="6"
+                                                      GridPane.valignment="CENTER"/>
+                                               <Label styleClass="normal-label" text="Différence"
+                                                      GridPane.halignment="CENTER" GridPane.rowIndex="7"
+                                                      GridPane.valignment="CENTER"/>
+                                               <Separator prefWidth="200.0" GridPane.columnSpan="2147483647"
+                                                          GridPane.rowIndex="3"/>
+                                               <Button fx:id="CSGUnionButton" maxWidth="90.0" minWidth="80.0"
+                                                       mnemonicParsing="false" onAction="#btnUnion" prefWidth="80.0"
+                                                       styleClass="custombutton" text="Union" GridPane.columnIndex="1"
+                                                       GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                                       GridPane.valignment="CENTER"/>
+                                               <Button fx:id="CSGIntersectionButton" maxWidth="90.0" minWidth="80.0"
+                                                       mnemonicParsing="false" onAction="#btnIntersection"
+                                                       prefWidth="80.0" styleClass="custombutton" text="Intersection"
+                                                       GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                                                       GridPane.rowIndex="6" GridPane.valignment="CENTER"/>
+                                               <Button fx:id="CSGDifferenceButton" maxWidth="90.0" minWidth="80.0"
+                                                       mnemonicParsing="false" onAction="#btnDifference"
+                                                       prefWidth="80.0" styleClass="custombutton" text="Différence"
+                                                       GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                                                       GridPane.rowIndex="7" GridPane.valignment="CENTER"/>
+                                               <TreeTableView fx:id="CSGModeTreeTable" prefHeight="200.0"
+                                                              prefWidth="200.0" GridPane.columnSpan="2147483647"
+                                                              GridPane.rowIndex="2">
+                                                   <columns>
+                                                       <TreeTableColumn fx:id="CSGShapeColumn" maxWidth="200.0"
+                                                                        minWidth="120.0" prefWidth="120.0"
+                                                                        text="Forme 3D"/>
+                                                       <TreeTableColumn fx:id="CSGShapeID" prefWidth="75.0" text="ID"/>
+                                                   </columns>
+                                               </TreeTableView>
+                                           </children>
+                                    </GridPane>
+                                 </content>
+                              </TitledPane>
+                               <TitledPane animated="true" text="Paramètres de la scène">
+                                   <content>
+                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                           <children>
+                                               <GridPane layoutX="1.0" layoutY="175.0" AnchorPane.bottomAnchor="50.0"
+                                                         AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                         AnchorPane.topAnchor="50.0">
+                                                   <columnConstraints>
+                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                          prefWidth="100.0"/>
+                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                          prefWidth="100.0"/>
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                       <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                       vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                       vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                       vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                       vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                       vgrow="SOMETIMES"/>
+                                                   </rowConstraints>
+                                                   <children>
+                                                       <Label styleClass="normal-label" text="Afficher les axes"/>
+                                                       <CheckBox fx:id="showAxisCheckBox" mnemonicParsing="false"
+                                                                 selected="true" text="" GridPane.columnIndex="1"/>
+                                                       <Label styleClass="normal-label" text="Arrière-plan"
+                                                              GridPane.rowIndex="1"/>
+                                                       <ColorPicker fx:id="backgroundColorPicker"
+                                                                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                                       <Label styleClass="normal-label" text="Zoom"
+                                                              GridPane.rowIndex="2"/>
+                                                       <Slider fx:id="fovSlider" majorTickUnit="40.0" max="180.0"
+                                                               min="0.0" minorTickCount="4" showTickLabels="true"
+                                                               showTickMarks="true" GridPane.columnIndex="1"
+                                                               GridPane.rowIndex="2"/>
+                                                   </children>
+                                               </GridPane>
+                                           </children>
+                                       </AnchorPane>
+                                   </content>
+                               </TitledPane>
+                               <TitledPane animated="true" text="Eclairage de la scène" fx:id="x2">
+                                   <content>
+                                       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                                           <content>
+                                               <GridPane hgap="5.0" vgap="5.0">
+                                                   <padding>
+                                                       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"
+                                                               fx:id="x31"/>
+                                                   </padding>
+                                                   <children>
+                                                       <Label styleClass="normal-label" text="Couleur : "
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                                       <Label maxWidth="1.7976931348623157E308"
+                                                              styleClass="important-title" text="Lumière ambiente"
+                                                              GridPane.columnIndex="0" GridPane.columnSpan="2147483647"
+                                                              GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
+                                                              GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
+                                                       <ColorPicker fx:id="ambientColorPicker" GridPane.columnIndex="1"
+                                                                    GridPane.rowIndex="2"/>
+                                                       <Label styleClass="normal-label" text="Activée"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                                       <CheckBox fx:id="ambientEnableCheckbox" mnemonicParsing="false"
+                                                                 text="" GridPane.columnIndex="1"
+                                                                 GridPane.rowIndex="1"/>
+                                                       <Label styleClass="normal-label" text="Couleur : "
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                                                       <ColorPicker id="ambientColorPicker" fx:id="light1ColorPicker"
+                                                                    GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                                       <Label maxWidth="1.7976931348623157E308"
+                                                              styleClass="important-title" text="Lumière 1 (Camera)"
+                                                              GridPane.columnIndex="0" GridPane.columnSpan="2"
+                                                              GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
+                                                              GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
+                                                       <Label styleClass="normal-label" text="Activée"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                                       <CheckBox fx:id="light1EnabledCheckBox" mnemonicParsing="false"
+                                                                 text="" GridPane.columnIndex="1"
+                                                                 GridPane.rowIndex="4"/>
+                                                       <Label styleClass="normal-label" text="liée à la camera"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                                                       <CheckBox fx:id="light1followCameraCheckBox"
+                                                                 mnemonicParsing="false" selected="true" text=""
+                                                                 GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                                                       <Label styleClass="normal-label" text="X"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                                                       <Slider fx:id="light1x" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                                                       <Label styleClass="normal-label" text="Y"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+                                                       <Slider fx:id="light1y" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                                                       <Label styleClass="normal-label" text="Z"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+                                                       <Slider fx:id="light1z" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+                                                       <Label maxWidth="1.7976931348623157E308"
+                                                              styleClass="important-title" text="Lumière 2"
+                                                              GridPane.columnIndex="0" GridPane.columnSpan="2"
+                                                              GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
+                                                              GridPane.rowIndex="10" GridPane.valignment="CENTER"/>
+                                                       <Label styleClass="normal-label" text="Activée"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+                                                       <CheckBox fx:id="light2EnabledCheckBox" mnemonicParsing="false"
+                                                                 text="" GridPane.columnIndex="1"
+                                                                 GridPane.rowIndex="11"/>
+                                                       <Label styleClass="normal-label" text="X"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+                                                       <Slider fx:id="light2x" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+                                                       <Label styleClass="normal-label" text="Y"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="14"/>
+                                                       <Slider fx:id="light2y" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="14"/>
+                                                       <Label styleClass="normal-label" text="Z"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+                                                       <Slider fx:id="light2z" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="15"/>
+                                                       <Label maxWidth="1.7976931348623157E308"
+                                                              styleClass="important-title" text="Lumière 3"
+                                                              GridPane.columnIndex="0" GridPane.columnSpan="2"
+                                                              GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS"
+                                                              GridPane.rowIndex="16" GridPane.valignment="CENTER"/>
+                                                       <Label styleClass="normal-label" text="Activée"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="17"/>
+                                                       <CheckBox fx:id="light3EnabledCheckBox" mnemonicParsing="false"
+                                                                 text="" GridPane.columnIndex="1"
+                                                                 GridPane.rowIndex="17"/>
+                                                       <Label styleClass="normal-label" text="X"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="19"/>
+                                                       <Slider fx:id="light3x" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="19"/>
+                                                       <Label styleClass="normal-label" text="Y"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="20"/>
+                                                       <Slider fx:id="light3y" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="20"/>
+                                                       <Label styleClass="normal-label" text="Z"
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="21"/>
+                                                       <Slider fx:id="light3z" majorTickUnit="20.0" max="100.0"
+                                                               min="-100.0" minorTickCount="5" showTickLabels="true"
+                                                               showTickMarks="false" value="0.0"
+                                                               GridPane.columnIndex="1" GridPane.rowIndex="21"/>
+                                                       <Label styleClass="normal-label" text="Couleur : "
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+                                                       <ColorPicker fx:id="light2ColorPicker" GridPane.columnIndex="1"
+                                                                    GridPane.rowIndex="12"/>
+                                                       <Label styleClass="normal-label" text="Couleur : "
+                                                              GridPane.columnIndex="0" GridPane.rowIndex="18"/>
+                                                       <ColorPicker fx:id="light3ColorPicker" GridPane.columnIndex="1"
+                                                                    GridPane.rowIndex="18"/>
+                                                   </children>
+                                                   <columnConstraints>
+                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                          prefWidth="100.0"/>
+                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+                                                                          prefWidth="100.0"/>
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                                                   </rowConstraints>
+                                               </GridPane>
+                                           </content>
+                                       </ScrollPane>
+                                   </content>
+                               </TitledPane>
+                               <TitledPane animated="true" expanded="false" text="Contenu de la scène" fx:id="x5">
+                                 <content>
+                                     <TreeTableView fx:id="hierarachyTreeTable" editable="true" prefHeight="200.0"
+                                                    prefWidth="200.0">
+                                       <columns>
+                                           <TreeTableColumn fx:id="nodeColumn" editable="false" minWidth="120.0"
+                                                            prefWidth="75.0" sortable="false" text="Forme 3D"/>
+                                           <TreeTableColumn fx:id="visibilityColumn" editable="true" text="Visibilité"/>
+                                           <TreeTableColumn fx:id="idColumn" editable="false" prefWidth="75.0"
+                                                            text="ID"/>
+                                           <TreeTableColumn fx:id="widthColumn" editable="false" text="Largeur"/>
+                                           <TreeTableColumn fx:id="heightColumn" editable="false" text="Hauteur"/>
+                                           <TreeTableColumn fx:id="depthColumn" editable="false" text="Profondeur"/>
+                                       </columns>
+                                    </TreeTableView>
+                                 </content>
+                              </TitledPane>
+                           </panes>
+                        </Accordion>
+                     </items>
+                  </SplitPane>
+              </items>
+            </SplitPane>
+             <ToolBar id="statusBar" styleClass="bottom">
+             <items>
+                 <Label fx:id="statusNumberOfNodes" text="Label"/>
+                 <Label fx:id="statusSelectedShape" text="Label"/>
+                 <Label layoutX="500.0"
+                        text="Veuillez appuyer sur Alt + le bouton gauche/droit de la souris pour manipuler la caméra"/>
+             </items>
+           </ToolBar>
+         </children>
+        <stylesheets>
+          <URL value="@viewer.css" />
+        </stylesheets>
+      </VBox>
+   </children>
+</AnchorPane>
